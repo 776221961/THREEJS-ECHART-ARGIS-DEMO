@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+	<meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="http://localhost/arcgis_js_api/library/3.17/3.17/dijit/themes/tundra/tundra.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost/arcgis_js_api/library/3.17/3.17/esri/css/esri.css" />
+    <script type="text/javascript" src="http://localhost/arcgis_js_api/library/3.17/3.17/init.js"></script>
+    
+     <script type="text/javascript">
+        dojo.require("esri.map");
+        function init() {
+            var myMap = new esri.Map("mapDiv");
+            var myt = new esri.layers.Arc();
+            myMap.addLayer(myt);
+        }
+    </script>
+
+</head>
+<body  class="tundra">
+<div id="mapDiv" style="width:900px;height:600px"></div>
+</body>
+</html>

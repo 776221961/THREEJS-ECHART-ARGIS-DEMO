@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>ArcGIS API for JavaScript Hello World App</title>
+    <script src="JS/three.js"></script>
+    <script src="JS/echarts.min.js"></script>
+    <script src="JS/echarts-gl.min.js"></script>
+    <style>
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.11/"></script>
+
+ 
+</head>
+<body>
+    <div id="viewDiv"></div>
+    <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView"
+    ], function(Map, MapView) {
+
+      var map = new Map({
+        basemap: "topo-vector"
+      });
+
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-118.71511,34.09042],
+        zoom: 11
+      });
+
+    });
+    </script>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+function makeGaussian(amplitude, x0, y0, sigmaX, sigmaY) {
+    return function (amplitude, x0, y0, sigmaX, sigmaY, x, y) {
+        var exponent = -(
+                ( Math.pow(x - x0, 2) / (2 * Math.pow(sigmaX, 2)))
+                + ( Math.pow(y - y0, 2) / (2 * Math.pow(sigmaY, 2)))
+            );
+        return amplitude * Math.pow(Math.E, exponent);
+    }.bind(null, amplitude, x0, y0, sigmaX, sigmaY);
+}
+// 创建一个高斯分布函数
+var gaussian = makeGaussian(50, 0, 0, 20, 20);
+
+var data = [];
+for (var i = 0; i < 1000; i++) {
+    // x, y 随机分布
+    var x = Math.random() * 100 - 50;
+    var y = Math.random() * 100 - 50;
+    var z = gaussian(x, y);
+    data.push([x, y, z]);
+}
+option = {
+    grid3D: {},
+    xAxis3D: {},
+    yAxis3D: {},
+    zAxis3D: { max: 100 },
+    series: [{
+        type: 'scatter3D',
+        data: data
+    }]
+}
+
+       myChart.setOption(option);
+    </script>
+ 
+    <script>
+    //创建场景
+
+    var scene = new THREE.Scene();
+
+    //设置相机（视野，显示口的宽高比，近裁剪面，远裁剪面）
+
+    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+    //设置相机的视点
+
+    camera.position.set(0,0,20);
+
+    //设置相机的朝向
+
+    camera.lookAt(new THREE.Vector3(0,0,0));
+
+    //渲染器
+
+    var renderer = new THREE.WebGLRenderer({antialias : true});
+
+    //设置渲染器的高度和宽度，如果加上第三个值 false，则按场景大小显示，等比例缩放
+
+    renderer.setSize( window.innerWidth, window.innerHeight,false);
+    renderer.setClearColor('#ffffff');
+    //将渲染器添加到html当中
+
+    document.body.appendChild( renderer.domElement );
+
+
+
+    //定义线的基本材料，我们可以使用LineBasicMaterial（实线材料）和LineDashedMaterial（虚线材料）
+
+    var material = new THREE.LineBasicMaterial({color:0x0000ff});
+
+    //设置具有几何顶点的几何（Geometry）或缓冲区几何（BufferGeometry）设置顶点位置，看名字就知道了，一个是直接将数据保存在js里面的，另一个是保存在WebGL缓冲区内的，而且肯定保存到WebGL缓冲区内的效率更高
+
+    var geometry = new THREE.Geometry();
+
+    geometry.vertices.push(new THREE.Vector3(-10,0,0));
+
+    geometry.vertices.push(new THREE.Vector3(0,10,0));
+
+    geometry.vertices.push(new THREE.Vector3(10,0,0));
+
+    //使用Line方法将线初始化
+
+    var line = new THREE.Line(geometry, material);
+
+    //将线添加到场景
+  var geocube=new THREE.CubeGeometry(4,4,4);
+  var cubmaterial=new  THREE.MeshBasicMaterial({color: 0x00f060});
+  var cube=new THREE.Mesh(geocube,cubmaterial);
+  scene.add(cube);
+    scene.add(line);
+
+var circlegeo=new THREE.CircleGeometry(4);
+var circlematerial=new THREE.MeshBasicMaterial({color:0x9f0000});
+var circle=new THREE.Mesh(circlegeo,circlematerial);
+circle.position.x=20;
+circle.position.y=10;
+scene.add(circle);
+render();
+    //使用渲染器渲染出场景和相机
+  function render(){
+      requestAnimationFrame(render);
+    //  cube.rotation.x+=0.01;
+      cube.rotation.y+=0.01;
+      renderer.render(scene, camera);
+  }
+
+    </script>
+</body>
+</html>
